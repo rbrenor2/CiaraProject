@@ -6,7 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     callGoal: 0,
-    done: 0
+    callDone: 0
   },
   mutations: {
     GOAL_SET: (state, payload) => {

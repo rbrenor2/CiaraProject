@@ -59,7 +59,6 @@
 
 <script>
 import Gauge from "@/components/Gauge.vue";
-import store from "../store";
 
 export default {
   name: "dashboard",
@@ -69,18 +68,20 @@ export default {
   updated() {
     // When reaches goal
     if (this.done == this.goal) {
-      // Do something with the labels
-      this.buttonMsg = "Made " + this.goal + " calls";
+      // Stores calls done
+      this.$store.dispatch("setCallDone", this.done);
+      //Update labels
+      this.buttonMsg = this.goal + " calls completed!";
       this.isDone = true;
     }
   },
-  mounted() {
+  beforeMount() {
     // Get goal from store
-    this.goal = store.state.callGoal;
+    this.goal = this.$store.state.callGoal;
   },
   data() {
     return {
-      buttonMsg: "Call +",
+      buttonMsg: "Add call +",
       goal: 0,
       done: 0,
       isDone: false,
@@ -93,6 +94,7 @@ export default {
   },
   methods: {
     buttonClicked() {
+      // Update done
       if (this.done < this.goal) {
         this.done++;
       }

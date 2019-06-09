@@ -1,9 +1,12 @@
 <template>
   <div class="home">
-    <img class="logo fadeInDown" alt="Ciara logo" src="../assets/logoCiara.png">
+    <!-- <img class="logo fadeInDown" alt="Ciara logo" src="../assets/logoCiara.png"> -->
     <Greetings name="Konstantin"/>
     <Slider ref="sliderComp" class="slider" v-on:callGoal="setCallGoal"/>
-    <Button class="fadeInUp" :msg="buttonMsg" link="/dashboard"/>
+    <router-link :to="link">
+      <b-button class="fadeInUp" v-on:click="buttonClicked">Let's begin!</b-button>
+    </router-link>
+    <!-- <Button class="fadeInUp" :msg="buttonMsg" link="/dashboard" /> -->
   </div>
 </template>
 
@@ -12,6 +15,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.goButton {
+  margin: 20px 0px 10px 0px;
+  animation-name: "fadeInUp";
+  animation-duration: 1.5s;
 }
 
 .logo {
@@ -28,33 +37,35 @@
 }
 </style>
 
-
 <script>
 // @ is an alias to /src
 // import HelloWorld from "@/components/HelloWorld.vue";
 import Greetings from "@/components/Greetings.vue";
 import Slider from "@/components/Slider.vue";
-import Button from "@/components/Button.vue";
-import store from "../store";
 
 export default {
   name: "home",
   data() {
     return {
+      callGoal: 0,
+      link: "dashboard",
+      goButton: "goButton",
+      fadeOutDown: "fadeOutDown",
       buttonMsg: "Let's rock!"
     };
   },
   components: {
-    // HelloWorld,
     Greetings,
-    Slider,
-    Button
-    // VueSlider
+    Slider
   },
   methods: {
     setCallGoal(value) {
-      this.$store.dispatch("setCallGoal", value);
-      console.log("STATE: " + store.state.callGoal);
+      // Update local data callGoal
+      this.callGoal = value;
+    },
+    buttonClicked() {
+      // Stores goal
+      this.$store.dispatch("setCallGoal", this.callGoal);
     }
   }
 };

@@ -37,9 +37,10 @@
       min-
       v-model="callGoal"
     />
-
-    <h3 v-bind:class="[isRocket? shakeGoal: fadeInUp]" ref="callGoal"></h3>
-    <h5 v-bind:class="[isRocket? shakeMessage: fadeInUp]" ref="message"></h5>
+    <div class="sliderFeedback">
+      <h3 v-bind:class="[isRocket? shakeGoal: fadeInUp]" ref="callGoal"></h3>
+      <h5 v-bind:class="[isRocket? shakeMessage: fadeInUp]" ref="message"></h5>
+    </div>
   </div>
 </template>
 
@@ -107,54 +108,60 @@ export default {
   },
   updated() {
     const { slider, message, callGoal } = this.$refs;
-    this.callGoal = slider.getValue();
-    if (slider.getValue() > 80) {
-      // this.play();
-      console.log("is not rocket, becoming");
+    const value = slider.getValue();
+    this.callGoal = value;
+
+    // 0 - sleepy man
+    if (value == 0) {
+      console.log("Change to sleepy man!");
+      this.isFood = false;
+      this.isSleep = true;
+      this.isDrink = false;
+      this.isRocket = false;
+      callGoal.textContent = slider.getValue() + " calls";
+      message.textContent = "...gonna just sleep all day...";
+    }
+    // 0-20 sleepy man
+    else if (value > 0 && value <= 20) {
+      console.log("Change to sleepy man!");
+      this.isFood = false;
+      this.isSleep = true;
+      this.isDrink = false;
+      this.isRocket = false;
+      callGoal.textContent = slider.getValue() + " calls";
+      message.textContent = "...gonna just chill today...";
+    }
+    // 20-50 - food
+    else if (value > 20 && value <= 50) {
+      console.log("Change to yummi food...");
+      this.isFood = true;
+      this.isSleep = false;
+      this.isDrink = false;
+      this.isRocket = false;
+      callGoal.textContent = slider.getValue() + " calls";
+      message.textContent = "...gotta bring home more than bacon...";
+    }
+    // 50-80 - toast
+    else if (value > 50 && value <= 80) {
+      console.log("Change to drinks");
+      this.isFood = false;
+      this.isSleep = false;
+      this.isDrink = true;
+      this.isRocket = false;
+      callGoal.textContent = slider.getValue() + " calls";
+      message.textContent = "...maybe that fancy wine too...";
+    } else if (value > 80) {
+      console.log("Change to rocket");
       this.isFood = false;
       this.isSleep = false;
       this.isDrink = false;
       this.isRocket = true;
 
-      // Set labels and message
       callGoal.textContent = slider.getValue() + " calls";
       message.textContent = "$$$ screw it gotta be a freaking millionaire $$$";
-    } else {
-      if (slider.getValue() == 0) {
-        console.log("Change to sleepy man!");
-        this.isFood = false;
-        this.isSleep = true;
-        this.isDrink = false;
-        this.isRocket = false;
-        callGoal.textContent = slider.getValue() + " calls";
-        message.textContent = "...gonna just sleep all day...";
-      } else if (slider.getValue() < 20) {
-        console.log("Change to sleepy man!");
-        this.isFood = false;
-        this.isSleep = true;
-        this.isDrink = false;
-        this.isRocket = false;
-        callGoal.textContent = slider.getValue() + " calls";
-        message.textContent = "...gonna just chill today...";
-      } else if (slider.getValue() < 50 && slider.getValue() >= 20) {
-        console.log("Change to yummi food...");
-        this.isFood = true;
-        this.isSleep = false;
-        this.isDrink = false;
-        this.isRocket = false;
-        callGoal.textContent = slider.getValue() + " calls";
-        message.textContent = "...gotta bring home more than bacon...";
-      } else if (slider.getValue() <= 80 && slider.getValue() >= 50) {
-        console.log("Change to drinks");
-        this.isFood = false;
-        this.isSleep = false;
-        this.isDrink = true;
-        this.isRocket = false;
-        callGoal.textContent = slider.getValue() + " calls";
-        message.textContent = "...maybe that fancy wine too...";
-      }
     }
-    // Emit callGoal
+
+    // Emit callGoal for parent
     this.$emit("callGoal", this.callGoal);
   },
   data() {
@@ -182,9 +189,6 @@ export default {
     };
   },
   methods: {
-    emitToParent(event) {
-      console.log(this.callGoal);
-    },
     handleAnimation: function(anim) {
       this.anim = anim;
     },
