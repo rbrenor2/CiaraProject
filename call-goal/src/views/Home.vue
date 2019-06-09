@@ -2,8 +2,8 @@
   <div class="home">
     <img class="logo fadeInDown" alt="Ciara logo" src="../assets/logoCiara.png">
     <Greetings name="Konstantin"/>
-    <Slider ref="sliderComp" class="slider"/>
-    <Button class msg="Let's rock" link="/dashboard"/>
+    <Slider ref="sliderComp" class="slider" v-on:callGoal="setCallGoal"/>
+    <Button class="fadeInUp" :msg="buttonMsg" link="/dashboard"/>
   </div>
 </template>
 
@@ -35,17 +35,14 @@
 import Greetings from "@/components/Greetings.vue";
 import Slider from "@/components/Slider.vue";
 import Button from "@/components/Button.vue";
-// import store from "../store";
+import store from "../store";
 
 export default {
   name: "home",
-
-  updated() {
-    // var test = this.$refs.slider.getValue();
-    // console.log(test);
-    // console.log("test");
-    // store.dispatch("setCallNumbers", this.$refs.sliderComp.value);
-    // console.log(store.state.callGoal);
+  data() {
+    return {
+      buttonMsg: "Let's rock!"
+    };
   },
   components: {
     // HelloWorld,
@@ -53,6 +50,12 @@ export default {
     Slider,
     Button
     // VueSlider
+  },
+  methods: {
+    setCallGoal(value) {
+      this.$store.dispatch("setCallGoal", value);
+      console.log("STATE: " + store.state.callGoal);
+    }
   }
 };
 </script>

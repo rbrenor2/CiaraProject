@@ -1,6 +1,6 @@
 <template>
   <div class="button">
-    <router-link to="/dashboard">
+    <router-link :to="link">
       <b-button>{{msg}}</b-button>
     </router-link>
   </div>

@@ -5,17 +5,23 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    callGoal: 0
+    callGoal: 0,
+    done: 0
   },
   mutations: {
-    setCallGoal(state, calls) {
-      state.callGoal = calls;
+    GOAL_SET: (state, payload) => {
+      state.callGoal = payload;
+    },
+    DONE_SET: (state, payload) => {
+      state.done = payload;
     }
   },
   actions: {
-    setCallGoal({ commit }, calls) {
-      console.log(calls);
-      commit("setCallGoal", calls);
+    setCallGoal(context, payload) {
+      context.commit("GOAL_SET", payload);
+    },
+    setCallDone(context, payload) {
+      context.commit("DONE_SET", payload);
     }
   }
 });

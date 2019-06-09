@@ -1,9 +1,10 @@
 <template>
   <div class="dashboard">
     <img class="logo fadeInDown" alt="Ciara logo" src="../assets/logoCiara.png">
-    <!-- <Greetings name="Konstantin"/> -->
-    <!-- <Slider ref="sliderComp" class="slider"/> -->
-    <!-- <Button class msg="Let's rock" link/> -->
+    <h3 class="title fadeInDown delay-1s">Let's go man</h3>
+    <h2 class="title fadeInDown delay-1s">{{leftToGo}}</h2>
+    <b-button class="addButton fadeInUp" v-on:click="buttonClicked">{{buttonMsg}}</b-button>
+    <Gauge v-bind:done="done" v-bind:goal="goal"/>
   </div>
 </template>
 
@@ -12,6 +13,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.addButton {
+  margin: 50px 0px 0px 0px;
+}
+.title {
+  margin: 50px 0px 0px 0px;
 }
 
 .logo {
@@ -28,16 +35,32 @@
 }
 </style>
 
-
 <script>
-// @ is an alias to /src
-
-// import store from "../store";
+import Gauge from "@/components/Gauge.vue";
+import Button from "@/components/Button.vue";
+import store from "../store";
 
 export default {
   name: "dashboard",
-
-  updated() {},
-  components: {}
+  components: {
+    Gauge,
+    Button
+  },
+  mounted() {
+    this.goal = this.$store.state.callGoal;
+  },
+  data() {
+    return {
+      buttonMsg: "Call +",
+      leftToGo: "89 to go",
+      goal: 0,
+      done: 0
+    };
+  },
+  methods: {
+    buttonClicked() {
+      store.dispatch("setCallDone", this.done++);
+    }
+  }
 };
 </script>

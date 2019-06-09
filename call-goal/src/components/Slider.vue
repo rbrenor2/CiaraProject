@@ -1,7 +1,7 @@
 <template>
   <div class="slider">
     <lottie
-      v-bind:class="[isRocket ? bounceRocket : hide]"
+      v-bind:class="[isRocket ? shake : hide]"
       :options="defaultOptionsRocket"
       :height="animSize"
       :width="animSize"
@@ -35,7 +35,7 @@
       ref="slider"
       width="50%"
       min-
-      v-model="value"
+      v-model="callGoal"
     />
 
     <h3 v-bind:class="[isRocket? shakeGoal: fadeInUp]" ref="callGoal"></h3>
@@ -49,11 +49,8 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  animation-duration: 3s;
+  animation-duration: 1s;
   animation-delay: 0.1s;
-}
-
-.fadeInUpSlider {
 }
 
 .message {
@@ -101,16 +98,16 @@ export default {
     // Init with Sleepy man
     this.isSleep = true;
     this.play();
-    this.stop();
 
     // Update labels
     callGoal.textContent = slider.getValue() + " calls";
-    message.textContent = "...gonna just stare at the ceiling...";
+    message.textContent = "...gonna just sleep all day...";
 
     slider.setValue(0);
   },
   updated() {
     const { slider, message, callGoal } = this.$refs;
+    this.callGoal = slider.getValue();
     if (slider.getValue() > 80) {
       // this.play();
       console.log("is not rocket, becoming");
@@ -130,7 +127,7 @@ export default {
         this.isDrink = false;
         this.isRocket = false;
         callGoal.textContent = slider.getValue() + " calls";
-        message.textContent = "...gonna just stare at the ceiling...";
+        message.textContent = "...gonna just sleep all day...";
       } else if (slider.getValue() < 20) {
         console.log("Change to sleepy man!");
         this.isFood = false;
@@ -157,6 +154,8 @@ export default {
         message.textContent = "...maybe that fancy wine too...";
       }
     }
+    // Emit callGoal
+    this.$emit("callGoal", this.callGoal);
   },
   data() {
     return {
@@ -176,12 +175,16 @@ export default {
       shakeGoal: "callGoal animated shake fast",
       shakeSlider: "slider animated shake fast",
       fadeInUpSlider: "slider fadeInUp",
+      fadeInUp: "fadeInUp",
       animSize: 200,
       animationSpeedRocket: 1,
-      value: 0
+      callGoal: 0
     };
   },
   methods: {
+    emitToParent(event) {
+      console.log(this.callGoal);
+    },
     handleAnimation: function(anim) {
       this.anim = anim;
     },
