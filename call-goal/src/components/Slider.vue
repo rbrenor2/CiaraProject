@@ -160,9 +160,6 @@ export default {
       callGoal.textContent = slider.getValue() + " calls";
       message.textContent = "$$$ screw it gotta be a freaking millionaire $$$";
     }
-
-    // Emit callGoal for parent
-    this.$emit("callGoal", this.callGoal);
   },
   data() {
     return {

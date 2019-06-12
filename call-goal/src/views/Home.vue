@@ -2,7 +2,7 @@
   <div class="home">
     <!-- <img class="logo fadeInDown" alt="Ciara logo" src="../assets/logoCiara.png"> -->
     <Greetings name="Konstantin"/>
-    <Slider ref="sliderComp" class="slider" v-on:callGoal="setCallGoal"/>
+    <Slider ref="sliderComp" class="slider" v-model="callGoal"/>
     <router-link :to="link">
       <b-button class="fadeInUp" v-on:click="buttonClicked">Let's begin!</b-button>
     </router-link>
@@ -59,13 +59,9 @@ export default {
     Slider
   },
   methods: {
-    setCallGoal(value) {
-      // Update local data callGoal
-      this.callGoal = value;
-    },
     buttonClicked() {
       // Stores goal
-      this.$store.dispatch("setCallGoal", this.callGoal);
+      this.$store.dispatch("setCallGoal", this.$refs.sliderComp.callGoal);
     }
   }
 };
