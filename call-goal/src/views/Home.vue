@@ -2,7 +2,7 @@
   <div class="home">
     <!-- <img class="logo fadeInDown" alt="Ciara logo" src="../assets/logoCiara.png"> -->
     <Greetings name="Konstantin"/>
-    <Slider ref="sliderComp" class="slider" v-model="callGoal"/>
+    <Slider ref="sliderComp" class="slider"/>
     <router-link :to="link">
       <b-button class="fadeInUp" v-on:click="buttonClicked">Let's begin!</b-button>
     </router-link>
@@ -45,22 +45,22 @@ import Slider from "@/components/Slider.vue";
 
 export default {
   name: "home",
+  components: {
+    Greetings,
+    Slider
+  },
   data() {
     return {
-      callGoal: 0,
       link: "dashboard",
       goButton: "goButton",
       fadeOutDown: "fadeOutDown",
       buttonMsg: "Let's rock!"
     };
   },
-  components: {
-    Greetings,
-    Slider
-  },
   methods: {
     buttonClicked() {
       // Stores goal
+      console.log("Storing call goal...");
       this.$store.dispatch("setCallGoal", this.$refs.sliderComp.callGoal);
     }
   }
