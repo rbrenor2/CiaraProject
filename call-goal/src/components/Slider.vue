@@ -94,8 +94,9 @@ export default {
     lottie: Lottie
   },
   mounted() {
+    const { message, callGoal } = this.$refs;
     // Init with Sleepy man
-    this.isSleep = true;
+    this.selectAnimation(this.callGoal, message, callGoal);
     this.play();
   },
   updated() {
