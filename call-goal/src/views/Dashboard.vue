@@ -1,10 +1,8 @@
 <template>
   <div class="dashboard">
     <img class="logo fadeInDown" alt="Ciara logo" src="../assets/logoCiara.png">
-    <!-- <h3 class="title fadeInDown delay-1s">Let's go man</h3> -->
     <div class="gauge">
-      <b-button :class="[isDone? shakeButton:addButton]" v-on:click="buttonClicked">{{buttonMsg}}</b-button>
-      <Gauge :callDone="done" :callGoal="goal"/>
+      <Gauge ref="gauge" :callGoal="callGoal" v-on:isDone="handleIsDone"/>
     </div>
   </div>
 </template>
@@ -65,39 +63,19 @@ export default {
   components: {
     Gauge
   },
-  updated() {
-    // When reaches goal
-    if (this.done == this.goal) {
-      // Stores calls done
-      this.$store.dispatch("setCallDone", this.done);
-      //Update labels
-      this.buttonMsg = this.goal + " calls completed!";
-      this.isDone = true;
-    }
-  },
   beforeMount() {
     // Get goal from store
-    this.goal = this.$store.state.callGoal;
+    this.callGoal = this.$store.state.callGoal;
   },
   data() {
     return {
-      buttonMsg: "Add call +",
-      goal: 0,
-      done: 0,
-      isDone: false,
-      congratChart: "congratChart",
-      congratMsg: "congratMsg",
-      shakeButton: "shakeButton",
-      addButton: "addButton",
-      hide: "hide"
+      callGoal: 0
     };
   },
   methods: {
-    buttonClicked() {
-      // Update done
-      if (this.done < this.goal) {
-        this.done++;
-      }
+    handleIsDone(isDone) {
+      console.log("Storing isDone...");
+      this.$store.dispatch("setCallDone", isDone);
     }
   }
 };

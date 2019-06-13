@@ -1,6 +1,7 @@
 <template>
   <div class="gauge">
     <h2 :class="[isDone? titleCongrat: titleNormal]">{{title}}</h2>
+    <b-button :class="[isDone? shakeButton:addButton]" v-on:click="buttonClicked">{{buttonMsg}}</b-button>
     <lottie
       v-bind:class="[isDone ? showAnim : hide]"
       :options="defaultOptions"
@@ -9,6 +10,7 @@
       v-on:animCreated="handleAnimation"
     />
     <apexchart
+      ref="gauge"
       :class="[isDone? hide: chartNormal]"
       width="600"
       type="radialBar"
@@ -52,6 +54,18 @@
   animation-delay: 0.1s;
   animation-duration: 0.8s;
 }
+
+.shakeButton {
+  margin: 10px 0px 10px 0px;
+  animation-name: "shake";
+  animation-duration: 0.7s;
+}
+
+.addButton {
+  margin: 20px 0px 10px 0px;
+  animation-name: "fadeInDown";
+  animation-duration: 1.5s;
+}
 </style>
 
 <script>
@@ -66,14 +80,19 @@ export default {
     lottie: Lottie
   },
   props: {
-    callGoal: Number,
-    callDone: Number
+    callGoal: Number
   },
   beforeMount() {
     this.title = this.callGoal + " left to go";
   },
   data() {
     return {
+      isDone: false,
+      callDone: 0,
+      buttonMsg: "Add call +",
+      shakeButton: "shakeButton",
+      addButton: "addButton",
+      finished: false,
       defaultOptions: { animationData: highFive },
       animSize: 500,
       animationSpeed: 1,
@@ -86,7 +105,6 @@ export default {
       titleCongrat: "title congratTitle",
       chartNormal: "chart fadeInUp",
       chartCongrat: "chart congratChart",
-      isDone: false,
       chartOptions: {
         plotOptions: {
           radialBar: {
@@ -136,55 +154,57 @@ export default {
     };
   },
   methods: {
-    updateSeries(newSeries, animated) {
-      this.series = newSeries;
-    },
     percentage(done, goal) {
       return (done / goal) * 100;
     },
     handleAnimation: function(anim) {
       this.anim = anim;
     },
-    stop: function() {
-      this.anim.stop();
-    },
-
     play: function() {
       this.anim.play();
     },
+    buttonClicked() {
+      // Add call to count
+      if (this.callDone < this.callGoal) {
+        console.log("+ 1 call");
+        this.callDone++;
+      }
+    },
+    updateFinished() {
+      this.title = "You've reached your goal!";
+      this.buttonMsg = this.callGoal + " calls completed!";
+      // Tells the parent that the goal was acomplished
+      this.isDone = true;
+      this.$emit("isDone", this.isDone);
+      // Play the high five animation
+      this.play();
+    },
+    updateLeft() {
+      const percentage = this.percentage(this.callDone, this.callGoal);
+      const leftToGo = this.callGoal - this.callDone;
 
-    pause: function() {
-      this.anim.pause();
-    },
-    reverse: function() {
-      this.anim.setDirection(-1);
-    },
-    onSpeedChange: function() {
-      this.anim.setSpeed(this.animationSpeed);
+      if (percentage <= 50) {
+        this.title = leftToGo + " left to go";
+      } else if (percentage > 50 && percentage < 80) {
+        this.title = leftToGo + " left, you're doing great!";
+      } else if (percentage >= 80) {
+        this.title = leftToGo + " left, we're preparing for the high five!";
+      }
     }
   },
   watch: {
     callDone: function() {
       // Update gauge series with percentage
-      this.updateSeries([this.percentage(this.callDone, this.callGoal)], true);
-
+      this.$refs.gauge.updateSeries(
+        [this.percentage(this.callDone, this.callGoal)],
+        true
+      );
       // Update labels accordingly
-      const leftToGo = this.callGoal - this.callDone;
-
       if (this.callDone == this.callGoal) {
-        this.isDone = true;
-        this.title = "You've reached your goal!";
-        this.isDone = true;
-        this.play();
+        // if the goal is acomplished
+        this.updateFinished();
       } else {
-        const percentage = this.percentage(this.callDone, this.callGoal);
-        if (percentage <= 50) {
-          this.title = leftToGo + " left to go";
-        } else if (percentage > 50 && percentage < 80) {
-          this.title = leftToGo + " left, you're doing great!";
-        } else if (percentage >= 80) {
-          this.title = leftToGo + " left, we're preparing for the high five!";
-        }
+        this.updateLeft();
       }
     }
   }
