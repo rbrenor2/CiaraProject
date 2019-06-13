@@ -102,7 +102,8 @@ export default {
   updated() {
     const { message, callGoal } = this.$refs;
     //Change animation and labels according to sliders value
-    this.selectAnimation(this.callGoal, message, callGoal);
+    callGoal.textContent = this.callGoal + " calls";
+    this.selectAnimation(this.callGoal, message);
   },
   data() {
     return {
@@ -135,7 +136,7 @@ export default {
     play: function() {
       this.anim.play();
     },
-    selectAnimation(value, message, callGoal) {
+    selectAnimation(value, message) {
       // 0 - sleepy man
       if (value == 0 && this.isSleep == false) {
         console.log("Change to sleepy man!");
@@ -143,7 +144,6 @@ export default {
         this.isSleep = true;
         this.isDrink = false;
         this.isRocket = false;
-        callGoal.textContent = value + " calls";
         message.textContent = "...gonna just sleep all day...";
       }
       // 0-20 sleepy man
@@ -153,7 +153,6 @@ export default {
         this.isSleep = true;
         this.isDrink = false;
         this.isRocket = false;
-        callGoal.textContent = value + " calls";
         message.textContent = "...gonna just chill today...";
       }
       // 20-50 - food
@@ -163,7 +162,7 @@ export default {
         this.isSleep = false;
         this.isDrink = false;
         this.isRocket = false;
-        callGoal.textContent = value + " calls";
+
         message.textContent = "...gotta bring home more than bacon...";
       }
       // 50-80 - toast
@@ -173,7 +172,7 @@ export default {
         this.isSleep = false;
         this.isDrink = true;
         this.isRocket = false;
-        callGoal.textContent = value + " calls";
+
         message.textContent = "...maybe that fancy wine too...";
       } else if (value > 80 && this.isRocket == false) {
         console.log("Change to rocket");
@@ -182,7 +181,6 @@ export default {
         this.isDrink = false;
         this.isRocket = true;
 
-        callGoal.textContent = value + " calls";
         message.textContent =
           "$$$ screw it gotta be a freaking millionaire $$$";
       }
