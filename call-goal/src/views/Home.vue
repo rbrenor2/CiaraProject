@@ -4,9 +4,8 @@
     <Greetings name="Konstantin"/>
     <Slider ref="sliderComp" class="slider"/>
     <router-link :to="link">
-      <b-button class="fadeInUp" v-on:click="buttonClicked">Let's begin!</b-button>
+      <b-button class="goButton">Let's begin!</b-button>
     </router-link>
-    <!-- <Button class="fadeInUp" :msg="buttonMsg" link="/dashboard" /> -->
   </div>
 </template>
 
@@ -53,16 +52,8 @@ export default {
     return {
       link: "dashboard",
       goButton: "goButton",
-      fadeOutDown: "fadeOutDown",
       buttonMsg: "Let's rock!"
     };
-  },
-  methods: {
-    buttonClicked() {
-      // Stores goal
-      console.log("Storing call goal...");
-      this.$store.dispatch("setCallGoal", this.$refs.sliderComp.callGoal);
-    }
   }
 };
 </script>

@@ -2,7 +2,7 @@
   <div class="dashboard">
     <img class="logo fadeInDown" alt="Ciara logo" src="../assets/logoCiara.png">
     <div class="gauge">
-      <Gauge ref="gauge" :callGoal="callGoal" v-on:isDone="handleIsDone"/>
+      <Gauge ref="gauge"/>
     </div>
   </div>
 </template>
@@ -62,21 +62,6 @@ export default {
   name: "dashboard",
   components: {
     Gauge
-  },
-  beforeMount() {
-    // Get goal from store
-    this.callGoal = this.$store.state.callGoal;
-  },
-  data() {
-    return {
-      callGoal: 0
-    };
-  },
-  methods: {
-    handleIsDone(isDone) {
-      console.log("Storing isDone...");
-      this.$store.dispatch("setCallDone", isDone);
-    }
   }
 };
 </script>

@@ -72,6 +72,7 @@
 import VueApexCharts from "vue-apexcharts";
 import Lottie from "vue-lottie";
 import highFive from "../assets/highfive.json";
+import { mapState } from "vuex";
 
 export default {
   name: "Gauge",
@@ -79,16 +80,18 @@ export default {
     apexchart: VueApexCharts,
     lottie: Lottie
   },
-  props: {
-    callGoal: Number
-  },
   beforeMount() {
-    this.title = this.callGoal + " left to go";
+    this.callDone = 0;
+  },
+  beforeUpdate() {
+    // Check when the goal will be achieved
+    if (this.callDone == this.callGoal) {
+      this.updateFinished();
+    }
   },
   data() {
     return {
       isDone: false,
-      callDone: 0,
       buttonMsg: "Add call +",
       shakeButton: "shakeButton",
       addButton: "addButton",
@@ -100,7 +103,6 @@ export default {
       hide: "hide",
       type: "radialBar",
       series: [0],
-      title: "",
       titleNormal: "title fadeInUp",
       titleCongrat: "title congratTitle",
       chartNormal: "chart fadeInUp",
@@ -155,6 +157,7 @@ export default {
   },
   methods: {
     percentage(done, goal) {
+      if (done == 0 && goal == 0) return 0;
       return (done / goal) * 100;
     },
     handleAnimation: function(anim) {
@@ -168,43 +171,42 @@ export default {
       if (this.callDone < this.callGoal) {
         console.log("+ 1 call");
         this.callDone++;
+        this.$refs.gauge.updateSeries(
+          [this.percentage(this.callDone, this.callGoal)],
+          true
+        );
       }
     },
     updateFinished() {
-      this.title = "You've reached your goal!";
       this.buttonMsg = this.callGoal + " calls completed!";
-      // Tells the parent that the goal was acomplished
       this.isDone = true;
-      this.$emit("isDone", this.isDone);
       // Play the high five animation
       this.play();
-    },
-    updateLeft() {
-      const percentage = this.percentage(this.callDone, this.callGoal);
-      const leftToGo = this.callGoal - this.callDone;
-
-      if (percentage <= 50) {
-        this.title = leftToGo + " left to go";
-      } else if (percentage > 50 && percentage < 80) {
-        this.title = leftToGo + " left, you're doing great!";
-      } else if (percentage >= 80) {
-        this.title = leftToGo + " left, we're preparing for the high five!";
-      }
     }
   },
-  watch: {
-    callDone: function() {
-      // Update gauge series with percentage
-      this.$refs.gauge.updateSeries(
-        [this.percentage(this.callDone, this.callGoal)],
-        true
-      );
-      // Update labels accordingly
-      if (this.callDone == this.callGoal) {
-        // if the goal is acomplished
-        this.updateFinished();
+  computed: {
+    ...mapState(["callGoal"]),
+    callDone: {
+      get() {
+        return this.$store.getters.getDone;
+      },
+      set(val) {
+        this.$store.dispatch("setCallDone", val);
+      }
+    },
+    title() {
+      const percentage = this.percentage(this.callDone, this.callGoal);
+      const leftToGo = this.callGoal - this.callDone;
+      if (leftToGo == 0) {
+        return "You've reached your goal!";
       } else {
-        this.updateLeft();
+        if (percentage > 50 && percentage < 80) {
+          return leftToGo + " left, you're doing great!";
+        } else if (percentage >= 80) {
+          return leftToGo + " left, we're preparing for the high five!";
+        } else {
+          return leftToGo + " left to go";
+        }
       }
     }
   }

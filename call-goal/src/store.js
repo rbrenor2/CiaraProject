@@ -13,7 +13,7 @@ export default new Vuex.Store({
       state.callGoal = payload;
     },
     DONE_SET: (state, payload) => {
-      state.done = payload;
+      state.callDone = payload;
     }
   },
   actions: {
@@ -22,6 +22,14 @@ export default new Vuex.Store({
     },
     setCallDone(context, payload) {
       context.commit("DONE_SET", payload);
+    }
+  },
+  getters: {
+    getDone: state => {
+      return state.callDone;
+    },
+    getGoal: state => {
+      return state.callGoal;
     }
   }
 });

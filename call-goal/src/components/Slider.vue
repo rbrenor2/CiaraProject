@@ -93,6 +93,9 @@ export default {
     VueSlider,
     lottie: Lottie
   },
+  beforeMount() {
+    this.callGoal = 0;
+  },
   mounted() {
     const { message, callGoal } = this.$refs;
     // Init with Sleepy man
@@ -107,7 +110,6 @@ export default {
   },
   data() {
     return {
-      callGoal: 0,
       defaultOptionsRocket: { animationData: rocket },
       defaultOptionsDrink: { animationData: drink },
       defaultOptionsSleep: { animationData: mansleep },
@@ -183,6 +185,16 @@ export default {
 
         message.textContent =
           "$$$ screw it gotta be a freaking millionaire $$$";
+      }
+    }
+  },
+  computed: {
+    callGoal: {
+      get() {
+        return this.$store.getters.getGoal;
+      },
+      set(val) {
+        this.$store.dispatch("setCallGoal", val);
       }
     }
   }
